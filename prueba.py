@@ -66,8 +66,8 @@ app.attributes('-fullscreen', True)
 app.title("SeñaUTA Educa")
 app.configure(fg_color="#428ecc")
 
-logo = customtkinter.CTkImage(dark_image=Image.open("C:/Users/pato-/OneDrive/Escritorio/Pruebas/Imagenes/SeñaUta.png"), size=(400, 250))
-logouta = customtkinter.CTkImage(dark_image=Image.open("C:/Users/pato-/OneDrive/Escritorio/Pruebas/Imagenes/uta_vertical.png"), size=(150, 100))
+logo = customtkinter.CTkImage(dark_image=Image.open("C:/Users/katia/OneDrive/Documentos/Proyecto 4/SenaUTA/Imagenes/SeñaUta.png"), size=(400, 250))
+logouta = customtkinter.CTkImage(dark_image=Image.open("C:/Users/katia/OneDrive/Documentos/Proyecto 4/SenaUTA/Imagenes/SeñaUta.png"), size=(150, 100))
 
 frame1 = customtkinter.CTkFrame(master=app, fg_color="transparent")
 frame1.pack()
