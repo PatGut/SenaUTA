@@ -1,105 +1,123 @@
-import customtkinter
-from PIL import Image
+import sys
+import cv2
+import numpy as np
+from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtWidgets import QApplication, QLabel, QMainWindow, QVBoxLayout, QWidget
+from mediapipe import solutions as mp
+from model.HandClassifier.HandClassifier import handClassifier
 
-customtkinter.set_appearance_mode("dark")
-customtkinter.set_default_color_theme("blue")
+class SignLanguageRecognition(QMainWindow):
+    def __init__(self, device=0, width=960, height=540, parent=None):
+        super(SignLanguageRecognition, self).__init__(parent)
 
-def create_window(app):
-    
-    for widget in app.winfo_children():
-        widget.destroy()
+        self.device = device
+        self.width = width
+        self.height = height
+        self.video_capture = cv2.VideoCapture(self.device)
+        self.video_capture.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
+        self.video_capture.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
 
-    
-    customtkinter.CTkLabel(master=app, text="SELECCIONAR MÓDULO", font=("century gothic", 40), justify="left").pack(anchor="nw", side="top", padx=(56, 0), pady=(41, 0))
+        self.mp_hands = mp.hands.Hands(
+            static_image_mode=False,
+            max_num_hands=2,
+            min_detection_confidence=0.7,
+            min_tracking_confidence=0.5
+        )
 
-    quizzes_frame = customtkinter.CTkFrame(master=app, fg_color="transparent")
-    quizzes_frame.pack(pady=(21, 0), padx=(50, 0), anchor="nw")
+        self.hand_classifier = handClassifier()
 
-    movies_img_data = Image.open("movies-quiz-bg.png")
-    movies_img = customtkinter.CTkImage(light_image=movies_img_data, dark_image=movies_img_data, size=(234, 91))
-    customtkinter.CTkLabel(master=quizzes_frame, text="", image=movies_img, corner_radius=8).grid(row=0, column=0, sticky="nw")
+        self.central_widget = QWidget(self)
+        self.setCentralWidget(self.central_widget)
 
-    sports_img_data = Image.open("sports-quiz-bg.png")
-    sports_img = customtkinter.CTkImage(light_image=sports_img_data, dark_image=sports_img_data, size=(234, 91))
-    customtkinter.CTkLabel(master=quizzes_frame, text="", image=sports_img, corner_radius=8).grid(row=1, column=0, sticky="nw", pady=(30, 0))
+        self.video_label = QLabel(self)
+        self.video_label.setAlignment(Qt.AlignCenter)
 
-    geography_img_data = Image.open("geography-quiz-bg.png")
-    geography_img = customtkinter.CTkImage(light_image=geography_img_data, dark_image=geography_img_data, size=(175, 210))
-    customtkinter.CTkButton(master=quizzes_frame, text="", image=geography_img, corner_radius=0, fg_color="transparent", command=lambda: show_classes(app)).grid(row=0, column=1, rowspan=2, sticky="nw")
+        layout = QVBoxLayout(self.central_widget)
+        layout.addWidget(self.video_label)
 
-    
-    customtkinter.CTkButton(master=app, text="Volver", font=("century gothic", 24), command=lambda: return_to_home(app)).pack(anchor="w", padx=20, pady=20)
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_frame)
+        self.timer.start(30)  # Actualizar cada 30 ms
 
-def show_classes(app):
-    
-    for widget in app.winfo_children():
-        widget.destroy()
+        self.subtitle = ''
+        self.times_captured = 0
+        self.prev_char = ''
 
-    
-    customtkinter.CTkLabel(master=app, text="SELECCIONAR CLASE", font=("century gothic", 40), justify="left").pack(anchor="nw", side="top", padx=(56, 0), pady=(41, 0))
+    def update_frame(self):
+        ret, frame = self.video_capture.read()
+        if ret:
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            results = self.mp_hands.process(frame)
+            if results.multi_hand_landmarks:
+                for hand_landmarks in results.multi_hand_landmarks:
+                    brect = self.calc_bounding_rect(frame, hand_landmarks)
+                    landmark_list = self.calc_landmark_list(frame, hand_landmarks)
+                    pre_processed_landmark_list = self.pre_process_landmark(landmark_list)
+                    mano_senial_id = self.hand_classifier(pre_processed_landmark_list)
 
-    classes_frame = customtkinter.CTkFrame(master=app, fg_color="transparent")
-    classes_frame.pack(pady=(21, 0), padx=(50, 0), anchor="nw")
+                    frame = self.draw_bounding_rect(True, frame, brect)
+                    frame = self.draw_landmarks(frame, landmark_list)
+                    frame = self.draw_info_text(frame, brect, mano_senial_id)
 
-    class_list = ["Clase 1", "Clase 2", "Clase 3", "Clase 4", "Clase 5"]
-    for c in class_list:
-        customtkinter.CTkButton(master=classes_frame, text=c, font=("century gothic", 24), command=lambda c=c: class_button_click(c)).pack(anchor="w", padx=50, pady=10)
+            frame = cv2.resize(frame, (840, 485))
+            height, width, channel = frame.shape
+            bytes_per_line = 3 * width
+            q_image = QImage(frame.data, width, height, bytes_per_line, QImage.Format_RGB888)
+            pixmap = QPixmap.fromImage(q_image)
+            self.video_label.setPixmap(pixmap)
 
-    
-    customtkinter.CTkButton(master=classes_frame, text="Volver", font=("century gothic", 24), command=lambda: return_to_home(app)).pack(anchor="w", padx=50, pady=10)
+    def calc_bounding_rect(self, image, hand_landmarks):
+        landmark_list = self.calc_landmark_list(image, hand_landmarks)
+        x, y, w, h = cv2.boundingRect(np.array(landmark_list))
+        return x, y, w, h
 
-def class_button_click(class_name):
-    
-    print(f"Se hizo clic en la clase: {class_name}")
+    def calc_landmark_list(self, image, hand_landmarks):
+        return [(int(point.x * image.shape[1]), int(point.y * image.shape[0])) for point in hand_landmarks.landmark]
 
-def return_to_home(app):
-    
-    for widget in app.winfo_children():
-        widget.destroy()
-    create_window(app)
+    def pre_process_landmark(self, landmark_list):
+        # Aquí puedes agregar cualquier preprocesamiento adicional necesario
+        return landmark_list
 
-def quit_app(app):
-    app.quit()
+    def draw_bounding_rect(self, use_brect, image, brect):
+        if use_brect:
+            x, y, w, h = brect
+            cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        return image
 
-app = customtkinter.CTk()
-app.attributes('-fullscreen', True)
-app.title("SeñaUTA Educa")
-app.configure(fg_color="#428ecc")
+    def draw_landmarks(self, image, landmark_list):
+        for point in landmark_list:
+            cv2.circle(image, point, 5, (255, 0, 0), -1)
+        return image
 
-logo = customtkinter.CTkImage(dark_image=Image.open("C:/Users/katia/OneDrive/Documentos/Proyecto 4/SenaUTA/Imagenes/SeñaUta.png"), size=(400, 250))
-logouta = customtkinter.CTkImage(dark_image=Image.open("C:/Users/katia/OneDrive/Documentos/Proyecto 4/SenaUTA/Imagenes/SeñaUta.png"), size=(150, 100))
+    def draw_info_text(self, image, brect, mano_senial_id):
+        x, y, _, _ = brect
+        textsize = cv2.getTextSize(str(mano_senial_id), cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
+        textX = (image.shape[1] - textsize[0]) // 2
+        cv2.putText(image, str(mano_senial_id), (int(textX), y - 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0), 2,
+                    cv2.LINE_AA)
+        self.update_subtitle(str(mano_senial_id))
+        return image
 
-frame1 = customtkinter.CTkFrame(master=app, fg_color="transparent")
-frame1.pack()
-Botones = customtkinter.CTkFrame(master=app, fg_color="transparent")
-Botones.pack(pady=10, padx=20, expand=True)
-frame2 = customtkinter.CTkFrame(master=app, fg_color="transparent")
-frame2.pack(pady=10, padx=20, fill="both")
+    def update_subtitle(self, char):
+        if self.times_captured == 10:
+            self.subtitle += char
+        if char == self.prev_char:
+            self.times_captured += 1
+        else:
+            self.prev_char = char
+            self.times_captured = 0
 
-label1 = customtkinter.CTkLabel(master=frame1, image=logo, text="")
-label1.pack(pady=10, padx=10)
+    def closeEvent(self, event):
+        self.video_capture.release()
+        event.accept()
 
-def on_button_click():
-    create_window(app)
 
-button1 = customtkinter.CTkButton(master=Botones, fg_color="#1c1c3b", hover_color="#ebae31", text="CLASES", font=("century gothic", 80), text_color="white", command=on_button_click)
-button1.pack(fill="both")
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    window = SignLanguageRecognition()
+    window.setGeometry(200, 200, 1000, 680)
+    window.setWindowTitle("Reconocimiento del lenguaje de señas chileno")
+    window.show()
+    sys.exit(app.exec_())
 
-button_space = customtkinter.CTkLabel(master=Botones, text="", fg_color="transparent")
-button_space.pack(fill="both")
-
-quit_button = customtkinter.CTkButton(master=Botones, fg_color="#1c1c3b", hover_color="#ebae31", text="SALIR", font=("century gothic", 80), text_color="white", command=lambda: quit_app(app))
-quit_button.pack(fill="both")
-
-def resize_buttons(event):
-    button_width = event.width // 3
-    button_height = event.height // 3
-    button1.configure(width=button_width, height=button_height)
-    quit_button.configure(width=button_width, height=button_height)
-
-app.bind("<Configure>", resize_buttons)
-
-label2 = customtkinter.CTkLabel(master=frame2, image=logouta, text="", justify="right")
-label2.pack(padx=1, pady=1, side="right")
-
-app.mainloop()

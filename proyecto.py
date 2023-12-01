@@ -80,7 +80,7 @@ def main():
         mp_hands = mp.solutions.hands
         
         hands = mp_hands.Hands(static_image_mode = use_static_image_mode,
-            max_num_hands = 1,
+            max_num_hands = 2,
             min_detection_confidence = min_detection_confidence,
             min_tracking_confidence = min_tracking_confidence
         )
@@ -197,14 +197,14 @@ def main():
     ventana.geometry("1000x680+200+10")
     ventana.title("Reconocimiento del lenguaje de señas chileno")
     ventana.resizable(width=False, height=False)
-    fondo = tk.PhotoImage(file ="./MainUI.png")
+    fondo = tk.PhotoImage(file ="./MainUI2.png")
     fondo1 = tk.Label(ventana, image=fondo).place(x=0,y=0, relwidth=1, relheight=1)
     #Colores
     fondo_boton = '#f67e7d'
     #Botones
     boton = tk.Button(ventana, text="Reiniciar\n Subtítulos", bg=fondo_boton, relief="flat",
                     cursor="hand2", width=10, height=2, command=erasesubtitle,font=("Calisto MT",14,"bold"))
-    boton.place(x=200,y=600)
+    boton.place(x=500,y=600)
 
     boton2 = tk.Button(ventana, text="Quitar\n Video", bg=fondo_boton, relief="flat",
                     cursor="hand2", width=10, height=2, command =quitar ,font=("Calisto MT",14,"bold"))
@@ -212,7 +212,7 @@ def main():
 
     boton3 = tk.Button(ventana, text="Iniciar\n Video", bg=fondo_boton, relief="flat",
                     cursor="hand2", width=10, height=2, command=activateVideo,font=("Calisto MT",14,"bold"))
-    boton3.place(x=500,y=600)
+    boton3.place(x=200,y=600)
     
     boton4 = tk.Button(ventana, text="Crear\n Espacio", bg=fondo_boton, relief="flat",
                     cursor="hand2", width=10, height=2, command=createSpace,font=("Calisto MT",14,"bold"))
