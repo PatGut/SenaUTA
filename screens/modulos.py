@@ -1,26 +1,36 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout, QWidget
-from PyQt5.QtGui import QPixmap, QPalette, QColor, QIcon
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout, QWidget, QDesktopWidget, QGraphicsDropShadowEffect, QGridLayout
+from PyQt5.QtGui import QPixmap, QPalette, QColor, QIcon, QFont
 from PyQt5.QtCore import Qt, QCoreApplication, QSize, QRect, QTimer
 from PyQt5.QtMultimedia import QCamera
 from PyQt5.QtMultimediaWidgets import QCameraViewfinder
 
 import prueba_pyqt5 
+from prueba_pyqt5 import dirImagenes
 from screens import abc
 from screens import frases
 from screens import palabras
 
-width = 2040
-height = 1400
-dirImagenes = 'C:/Users/katia/OneDrive/Documentos/Proyecto 4/SenaUTA/Imagenes'
 colorFondo = QColor(135,206,250)
 
 class ScreenModulos(QMainWindow):
     def __init__(self):
         super().__init__()
         self.title = 'Módulos'
-        self.width = width
-        self.height = height
+        self.width, self.height = self.get_screen_resolution()
         self.initUI()
+    #Aqui se toma la resolución de la pantalla del usuario
+    def get_screen_resolution(self):
+        desktop = QDesktopWidget()
+        screen_rect = desktop.screenGeometry()
+        return screen_rect.width(), screen_rect.height()
+    
+    #Función para agregar sombreado a los botones
+    def add_shadow_effect(self, widget):
+        shadow = QGraphicsDropShadowEffect(widget)
+        shadow.setBlurRadius(20)  # Ajusta el radio de desenfoque según tus necesidades
+        shadow.setColor(QColor(0, 0, 0, 150))  # Ajusta el color y la opacidad de la sombra
+        shadow.setOffset(10, 10)  # Ajusta el desplazamiento de la sombra
+        widget.setGraphicsEffect(shadow)
 
     def initUI(self):
         self.setWindowTitle(self.title)
@@ -29,66 +39,77 @@ class ScreenModulos(QMainWindow):
         palette = QPalette()
         palette.setColor(QPalette.Window, colorFondo)
         self.setPalette(palette)
-
+        
         # Agregar la etiqueta 'modulos' al layout
-        label = QLabel('Módulos', self)
+        label = QLabel('MÓDULOS', self)
         label.setFont(label.font())
-        label.setFixedSize(QSize(500, 200))
-
+        label.setFixedSize(QSize(int(self.width/4.2), int(self.height/6.3)))
         label.setStyleSheet("font-family: Century Gothic;font-weight: bold;  padding-left: 50px; font-size: 100px;  color: #00416A;")
 
         # Cargar la imagen
-        self.button_icon = QIcon(dirImagenes+'/abecedario.png')
-
+        abc_button_icon = QIcon(dirImagenes+'/abecedario.png')
         # Crear el botón y establecer la etiqueta
-        self_button = QPushButton(self)
-        self_button.setFixedSize(QSize(600, 500))
-        self_button.setIcon(self.button_icon)
-        self_button.clicked.connect(self.class1)
+        abc_button = QPushButton(self)        
+        abc_button.setFixedSize(QSize(int(self.width/4), int(self.height/3)))
+        abc_button.setIcon(abc_button_icon)
+        abc_button.clicked.connect(self.class1)
         # Establecer el tamaño del icono
-        self_button.setIconSize(QSize(500, 400))
+        abc_button.setIconSize(QSize(int(self.width/5), int(self.height/4)))
         # Establecer el margen inferior del texto en el botón
-        self_button.setStyleSheet("font-family: Century Gothic; font-weight: bold; font-size: 60px; border: 10px solid #00416A; border-radius: 50px; background-color: #BFF5F5; color: #00416A; ")
+        abc_button_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades
+        abc_button_border_width = int(self.height * abc_button_border_width_percentage)
+        abc_button.setStyleSheet(f"border: {abc_button_border_width}px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
+        self.add_shadow_effect(abc_button)   
+        abc_button.move(int(self.width / 5.5),int(self.height / 7))
 
-        self_button.move(int(self.width / 3) - int(self_button.width()) + 250,230)
-
-        # Botón 'clase 2'
-        button2_icon = QIcon(dirImagenes+'/palabras.png')
-        button2 = QPushButton(self)
-        button2.setFixedSize(QSize(750, 500))
-        button2.setIcon(button2_icon)
+        # Botón 'palabras'
+        palabras_button_icon = QIcon(dirImagenes+'/palabras.png')
+        palabras_button = QPushButton(self)
+        palabras_button.setFixedSize(QSize(int(self.width/3.5), int(self.height/3)))
+        palabras_button.setIcon(palabras_button_icon)
+        palabras_button.clicked.connect(self.class2)
         # Establecer el tamaño del icono
-        button2.setIconSize(QSize(650, 400))
-        button2.setStyleSheet("font-family: Century Gothic; font-weight: bold; font-size: 60px; border: 10px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
-
-        button2.clicked.connect(self.class2)
-        button2.move(int(self.width / 2) - int(self_button.width() / 2)+ 250,230)
+        palabras_button.setIconSize(QSize(int(self.width/4), int(self.height/4)))
+        # Establecer el margen inferior del texto en el botón
+        palabras_button_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades
+        palabras_button_border_width = int(self.height * palabras_button_border_width_percentage)
+        palabras_button.setStyleSheet(f"border: {palabras_button_border_width}px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
+        self.add_shadow_effect(palabras_button)   
+        palabras_button.move(int(self.width / 2.1),int(self.height / 7))
+        
 
         # Botón 'clase 3'
-        button3_icon = QIcon(dirImagenes+'/frases.png')
-        button3 = QPushButton(self)
-        button3.setFixedSize(QSize(960, 500))
-        button3.setIcon(button3_icon)
+        frases_button_icon = QIcon(dirImagenes+'/frases.png')
+        frases_button = QPushButton(self)
+        frases_button.setFixedSize(QSize(int(self.width/2.7), int(self.height/3)))
+        frases_button.setIcon(frases_button_icon)
+        frases_button.clicked.connect(self.class3)
         # Establecer el tamaño del icono
-        button3.setIconSize(QSize(800, 500))
-        button3.setStyleSheet("font-family: Century Gothic; font-weight: bold; font-size: 60px; border: 10px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
-
-        button3.clicked.connect(self.class3)
-        button3.move(int(self.width / 3) - int(self_button.width()) + 250,770)
+        frases_button.setIconSize(QSize(int(self.width/3), int(self.height/3)))
+        # Establecer el margen inferior del texto en el botón
+        frases_button_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades
+        frases_button_border_width = int(self.height * frases_button_border_width_percentage)
+        frases_button.setStyleSheet(f"border: {frases_button_border_width}px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
+        self.add_shadow_effect(frases_button)   
+        frases_button.move(int(self.width / 5.5),int(self.height / 2))
 
         # Botón 'Volver'
         back_button_icon = QIcon(dirImagenes+'/volver.png')
         back_button = QPushButton(self)
-        back_button.setFixedSize(QSize(400, 500))
-        
+        back_button.setFixedSize(QSize(int(self.width/6), int(self.height/3)))        
         back_button.setIcon(back_button_icon)
-        # Establecer el tamaño del icono
-        back_button.setIconSize(QSize(400, 400))
-        back_button.setStyleSheet("font-family: Century Gothic; font-weight: bold; font-size: 60px; border: 10px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: black; ")
-
         back_button.clicked.connect(self.back_to_previous_screen)
-        back_button.move(int(self.width / 2) + int(button3.width()/2) - 170,770)
-
+        # Establecer el tamaño del icono
+        back_button.setIconSize(QSize(int(self.width/6), int(self.height/4)))
+        # Establecer el margen inferior del texto en el botón
+        back_button_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades
+        back_button_border_width = int(self.height * back_button_border_width_percentage)
+        back_button.setStyleSheet(f"border: {back_button_border_width}px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
+        self.add_shadow_effect(back_button)   
+        back_button.move(int(self.width / 1.68),int(self.height / 2))
+        
+        # Mostrar la ventana en pantalla completa
+        self.showFullScreen()
         self.show()
 
     def class1(self):
