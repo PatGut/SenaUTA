@@ -1,11 +1,9 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout, QWidget, QDesktopWidget, QGraphicsDropShadowEffect, QGridLayout
-from PyQt5.QtGui import QPixmap, QPalette, QColor, QIcon, QFont
-from PyQt5.QtCore import Qt, QCoreApplication, QSize, QRect, QTimer
-from PyQt5.QtMultimedia import QCamera
-from PyQt5.QtMultimediaWidgets import QCameraViewfinder
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QLabel, QWidget, QDesktopWidget, QGraphicsDropShadowEffect, QGridLayout
+from PyQt5.QtGui import  QPalette, QColor, QIcon, QFont
+from PyQt5.QtCore import  QSize
 
-import prueba_pyqt5 
-from prueba_pyqt5 import dirImagenes
+import proyectoQt5 
+from proyectoQt5 import dirImagenes
 from screens import modulos
 from screens import realizar_clase
 
@@ -17,6 +15,7 @@ class ScreenABC(QMainWindow):
         super().__init__()
         self.title = 'Abecedario'
         self.width, self.height = self.get_screen_resolution()
+        self.active_containers = []
         self.initUI()
 
     #Aqui se toma la resolución de la pantalla del usuario
@@ -32,6 +31,12 @@ class ScreenABC(QMainWindow):
         shadow.setColor(QColor(0, 0, 0, 150))  # Ajusta el color y la opacidad de la sombra
         shadow.setOffset(10, 10)  # Ajusta el desplazamiento de la sombra
         widget.setGraphicsEffect(shadow)
+    #Función para ocultar container anterior
+    def hide_previous_containers(self):
+        for container in self.active_containers:
+            container.hide()  # Oculta el contenedor
+            container.deleteLater()  # Elimina el contenedor
+        self.active_containers.clear()
 
     def initUI(self):
         self.setWindowTitle(self.title)
@@ -146,45 +151,84 @@ class ScreenABC(QMainWindow):
         self.show()
 
     def class1(self):
-        print('Clase 1 seleccionada')
+        print('Clase 1 seleccionada')        
+        self.hide_previous_containers()  # Ocultar/Eliminar contenedores anteriores
+        
         container = QPushButton('Clase 1', self)
-        container.setStyleSheet("text-align: top; font-family: Century Gothic;  font-weight: bold; font-size: 50px; border: 10px solid #00416A; border-radius: 50px; padding: 50px; background-color: #BFF5F5; color: #00416A; ")
-        container.setFixedSize(QSize(1100, 1000))
-        container.move(int(self.width / 2) - int(500/2), 270)
+        self.active_containers.append(container)
+        #Cambios
+        container_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades
+        container_border_width = int(self.height * container_border_width_percentage)
+        container.setStyleSheet(f"border: {container_border_width}px solid #00416A; text-align: top; border-radius: 50px; padding: 50px; background-color: #BFF5F5; color: #00416A; ")
+        container_font = QFont("Century Gothic", pointSize=int(self.height * 0.02))  # Ajusta el factor según tus necesidades
+        container_font.setBold(True)  
+        container.setFont(container_font)         
+        container.setFixedSize(QSize(int(self.width / 2.3), int(self.height / 1.5)))
+        container.move(int(self.width / 2.48), int(self.height / 5.9))
+        self.add_shadow_effect(container) 
+#hasta aqui
+        
+
         letras_button_icon = QIcon(dirImagenes+'/clase1abc.png')
         letras_button = QPushButton(self)
-        letras_button.setFixedSize(QSize(900, 800))
+        #Cambios
+        letras_button.setFixedSize(QSize(int(self.width / 2.84), int(self.height / 2)))
         letras_button.setIcon(letras_button_icon)
-        letras_button.setIconSize(QSize(900, 800))
+        letras_button.setIconSize(QSize(int(self.width / 2.84), int(self.height / 2)))
         letras_button.setStyleSheet("font-family: Century Gothic; font-size: 40px; border: none; border-radius: 50px; color: #00416A; ")
-        letras_button.move(int(self.width / 2) - int(500/2)+100, 300)
+        letras_button.move(int(self.width / 2.26), int(self.height / 5.3))
+#
         boton = QPushButton('Iniciar Clase', self)
-        boton.setStyleSheet("font-family: Century Gothic; font-size: 40px; font-weight: bold; border: 10px solid #00416A;  border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
-        boton.setFixedSize(QSize(500, 200))
-        boton.move(int(self.width / 2) + 280, 1000)
+        #
+        boton_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades
+        boton_border_width = int(self.height * boton_border_width_percentage)
+        boton.setStyleSheet(f"border: {boton_border_width}px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
+        boton_font = QFont("Century Gothic", pointSize=int(self.height * 0.018))  # Ajusta el factor según tus necesidades
+        boton_font.setBold(True)  
+        boton.setFont(boton_font)         
+        boton.setFixedSize(QSize(int(self.width / 4), int(self.height / 8)))
+        boton.move(int(self.width / 2), int(self.height / 1.6))
+        self.add_shadow_effect(boton) 
+#   
         boton.clicked.connect(self.iniciarClase) 
         container.show()
         letras_button.show()
         boton.show()
         
+        
 
     def class2(self):
         print('Clase 2 seleccionada')
+        self.hide_previous_containers()  # Ocultar/Eliminar contenedores anteriores
+
         container = QPushButton('Clase 2', self)
-        container.setStyleSheet("text-align: top; font-family: Century Gothic;  font-weight: bold; font-size: 50px; border: 10px solid #00416A; border-radius: 50px; padding: 50px; background-color: #BFF5F5; color: #00416A; ")
-        container.setFixedSize(QSize(1100, 1000))
-        container.move(int(self.width / 2) - int(500/2), 270)
+        self.active_containers.append(container)
+        container_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades
+        container_border_width = int(self.height * container_border_width_percentage)
+        container.setStyleSheet(f"border: {container_border_width}px solid #00416A; text-align: top; border-radius: 50px; padding: 50px; background-color: #BFF5F5; color: #00416A; ")
+        container_font = QFont("Century Gothic", pointSize=int(self.height * 0.02))  # Ajusta el factor según tus necesidades
+        container_font.setBold(True)  
+        container.setFont(container_font)         
+        container.setFixedSize(QSize(int(self.width / 2.3), int(self.height / 1.5)))
+        container.move(int(self.width / 2.48), int(self.height / 5.9))
+        self.add_shadow_effect(container) 
         letras_button_icon = QIcon(dirImagenes+'/clase2abc.png')
         letras_button = QPushButton(self)
-        letras_button.setFixedSize(QSize(900, 800))
+        letras_button.setFixedSize(QSize(int(self.width / 2.84), int(self.height / 2)))
         letras_button.setIcon(letras_button_icon)
-        letras_button.setIconSize(QSize(900, 800))
+        letras_button.setIconSize(QSize(int(self.width / 2.84), int(self.height / 2)))
         letras_button.setStyleSheet("font-family: Century Gothic; font-size: 40px; border: none; border-radius: 50px; color: #00416A; ")
-        letras_button.move(int(self.width / 2) - int(500/2)+100, 300)
+        letras_button.move(int(self.width / 2.26), int(self.height / 5.3))
         boton = QPushButton('Iniciar Clase', self)
-        boton.setStyleSheet("font-family: Century Gothic; font-size: 40px; font-weight: bold; border: 10px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
-        boton.setFixedSize(QSize(500, 200))
-        boton.move(int(self.width / 2) + 280, 1000)
+        boton_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades
+        boton_border_width = int(self.height * boton_border_width_percentage)
+        boton.setStyleSheet(f"border: {boton_border_width}px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
+        boton_font = QFont("Century Gothic", pointSize=int(self.height * 0.018))  # Ajusta el factor según tus necesidades
+        boton_font.setBold(True)  
+        boton.setFont(boton_font)         
+        boton.setFixedSize(QSize(int(self.width / 4), int(self.height / 8)))
+        boton.move(int(self.width / 2), int(self.height / 1.6))
+        self.add_shadow_effect(boton)
         boton.clicked.connect(self.iniciarClase) 
         container.show()
         letras_button.show()
@@ -192,21 +236,35 @@ class ScreenABC(QMainWindow):
 
     def class3(self):
         print('Clase 3 seleccionada')
+        self.hide_previous_containers()  # Ocultar/Eliminar contenedores anteriores
         container = QPushButton('Clase 3', self)
-        container.setStyleSheet("text-align: top; font-family: Century Gothic;  font-weight: bold; font-size: 50px; border: 10px solid #00416A; border-radius: 50px; padding: 50px; background-color: #BFF5F5; color: #00416A; ")
-        container.setFixedSize(QSize(1100, 1000))
-        container.move(int(self.width / 2) - int(500/2), 270)
+        self.active_containers.append(container)
+        container_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades
+        container_border_width = int(self.height * container_border_width_percentage)
+        container.setStyleSheet(f"border: {container_border_width}px solid #00416A; text-align: top; border-radius: 50px; padding: 50px; background-color: #BFF5F5; color: #00416A; ")
+        container_font = QFont("Century Gothic", pointSize=int(self.height * 0.02))  # Ajusta el factor según tus necesidades
+        container_font.setBold(True)  
+        container.setFont(container_font)         
+        container.setFixedSize(QSize(int(self.width / 2.3), int(self.height / 1.5)))
+        container.move(int(self.width / 2.48), int(self.height / 5.9))
+        self.add_shadow_effect(container)
         letras_button_icon = QIcon(dirImagenes+'/clase3abc.png')
         letras_button = QPushButton(self)
-        letras_button.setFixedSize(QSize(900, 800))
+        letras_button.setFixedSize(QSize(int(self.width / 2.84), int(self.height / 2)))
         letras_button.setIcon(letras_button_icon)
-        letras_button.setIconSize(QSize(900, 800))
+        letras_button.setIconSize(QSize(int(self.width / 2.84), int(self.height / 2)))
         letras_button.setStyleSheet("font-family: Century Gothic; font-size: 40px; border: none; border-radius: 50px; color: #00416A; ")
         letras_button.move(int(self.width / 2) - int(500/2)+100, 300)
         boton = QPushButton('Iniciar Clase', self)
-        boton.setStyleSheet("font-family: Century Gothic; font-size: 40px; font-weight: bold;border: 10px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
-        boton.setFixedSize(QSize(500, 200))
-        boton.move(int(self.width / 2) + 280, 1000)
+        boton_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades
+        boton_border_width = int(self.height * boton_border_width_percentage)
+        boton.setStyleSheet(f"border: {boton_border_width}px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
+        boton_font = QFont("Century Gothic", pointSize=int(self.height * 0.018))  # Ajusta el factor según tus necesidades
+        boton_font.setBold(True)  
+        boton.setFont(boton_font)         
+        boton.setFixedSize(QSize(int(self.width / 4), int(self.height / 8)))
+        boton.move(int(self.width / 2), int(self.height / 1.6))
+        self.add_shadow_effect(boton) 
         boton.clicked.connect(self.iniciarClase) 
         container.show()
         letras_button.show()
@@ -214,10 +272,18 @@ class ScreenABC(QMainWindow):
 
     def class4(self):
         print('Clase 4 seleccionada')
+        self.hide_previous_containers()  # Ocultar/Eliminar contenedores anteriores
         container = QPushButton('Clase 4', self)
-        container.setStyleSheet("text-align: top; font-family: Century Gothic;  font-weight: bold; font-size: 50px; border: 10px solid #00416A; border-radius: 50px; padding: 50px; background-color: #BFF5F5; color: #00416A; ")
-        container.setFixedSize(QSize(1100, 1000))
-        container.move(int(self.width / 2) - int(500/2), 270)
+        self.active_containers.append(container)
+        container_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades
+        container_border_width = int(self.height * container_border_width_percentage)
+        container.setStyleSheet(f"border: {container_border_width}px solid #00416A; text-align: top; border-radius: 50px; padding: 50px; background-color: #BFF5F5; color: #00416A; ")
+        container_font = QFont("Century Gothic", pointSize=int(self.height * 0.02))  # Ajusta el factor según tus necesidades
+        container_font.setBold(True)  
+        container.setFont(container_font)         
+        container.setFixedSize(QSize(int(self.width / 2.3), int(self.height / 1.5)))
+        container.move(int(self.width / 2.48), int(self.height / 5.9))
+        self.add_shadow_effect(container)
         letras_button_icon = QIcon(dirImagenes+'/clase4abc.png')
         letras_button = QPushButton(self)
         letras_button.setFixedSize(QSize(900, 800))
@@ -226,9 +292,15 @@ class ScreenABC(QMainWindow):
         letras_button.setStyleSheet("font-family: Century Gothic; font-size: 40px; border: none; border-radius: 50px; color: #00416A; ")
         letras_button.move(int(self.width / 2) - int(500/2)+100, 300)
         boton = QPushButton('Iniciar Clase', self)
-        boton.setStyleSheet("font-family: Century Gothic; font-size: 40px;font-weight: bold; border: 10px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
-        boton.setFixedSize(QSize(500, 200))
-        boton.move(int(self.width / 2) + 280, 1000)
+        boton_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades
+        boton_border_width = int(self.height * boton_border_width_percentage)
+        boton.setStyleSheet(f"border: {boton_border_width}px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
+        boton_font = QFont("Century Gothic", pointSize=int(self.height * 0.018))  # Ajusta el factor según tus necesidades
+        boton_font.setBold(True)  
+        boton.setFont(boton_font)         
+        boton.setFixedSize(QSize(int(self.width / 4), int(self.height / 8)))
+        boton.move(int(self.width / 2), int(self.height / 1.6))
+        self.add_shadow_effect(boton) 
         boton.clicked.connect(self.iniciarClase) 
         container.show()
         letras_button.show()
@@ -236,21 +308,37 @@ class ScreenABC(QMainWindow):
     
     def class5(self):
         print('Clase 5 seleccionada')
+        self.hide_previous_containers()  # Ocultar/Eliminar contenedores anteriores
+        
         container = QPushButton('Clase 5', self)
-        container.setStyleSheet("text-align: top; font-family: Century Gothic;  font-weight: bold; font-size: 50px; border: 10px solid #00416A; border-radius: 50px; padding: 50px; background-color: #BFF5F5; color: #00416A; ")
-        container.setFixedSize(QSize(1100, 1000))
-        container.move(int(self.width / 2) - int(500/2), 270)
+        self.active_containers.append(container)
+
+        container_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades
+        container_border_width = int(self.height * container_border_width_percentage)
+        container.setStyleSheet(f"border: {container_border_width}px solid #00416A; text-align: top; border-radius: 50px; padding: 50px; background-color: #BFF5F5; color: #00416A; ")
+        container_font = QFont("Century Gothic", pointSize=int(self.height * 0.02))  # Ajusta el factor según tus necesidades
+        container_font.setBold(True)  
+        container.setFont(container_font)         
+        container.setFixedSize(QSize(int(self.width / 2.3), int(self.height / 1.5)))
+        container.move(int(self.width / 2.48), int(self.height / 5.9))
+        self.add_shadow_effect(container)
         letras_button_icon = QIcon(dirImagenes+'/clase5abc.png')
         letras_button = QPushButton(self)
-        letras_button.setFixedSize(QSize(900, 800))
+        letras_button.setFixedSize(QSize(int(self.width / 2.84), int(self.height / 2)))
         letras_button.setIcon(letras_button_icon)
-        letras_button.setIconSize(QSize(900, 800))
+        letras_button.setIconSize(QSize(int(self.width / 2.84), int(self.height / 2)))
         letras_button.setStyleSheet("font-family: Century Gothic; font-size: 40px; border: none; border-radius: 50px; color: #00416A; ")
-        letras_button.move(int(self.width / 2) - int(500/2)+100, 300)
+        letras_button.move(int(self.width / 2.26), int(self.height / 5.3))
         boton = QPushButton('Iniciar Clase', self)
-        boton.setStyleSheet("font-family: Century Gothic; font-size: 40px;font-weight: bold; border: 10px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
-        boton.setFixedSize(QSize(500, 200))
-        boton.move(int(self.width / 2) + 280, 1000)
+        boton_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades
+        boton_border_width = int(self.height * boton_border_width_percentage)
+        boton.setStyleSheet(f"border: {boton_border_width}px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
+        boton_font = QFont("Century Gothic", pointSize=int(self.height * 0.018))  # Ajusta el factor según tus necesidades
+        boton_font.setBold(True)  
+        boton.setFont(boton_font)         
+        boton.setFixedSize(QSize(int(self.width / 4), int(self.height / 8)))
+        boton.move(int(self.width / 2), int(self.height / 1.6))
+        self.add_shadow_effect(boton) 
         boton.clicked.connect(self.iniciarClase) 
         container.show()
         letras_button.show()
@@ -263,7 +351,7 @@ class ScreenABC(QMainWindow):
         self.hide()
 
     def show_next_screen(self):
-        self.next_screen = prueba_pyqt5.App()
+        self.next_screen = proyectoQt5.App()
         self.next_screen.show()
         self.hide()
 

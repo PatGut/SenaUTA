@@ -4,8 +4,8 @@ from PyQt5.QtCore import Qt, QCoreApplication, QSize, QRect, QTimer
 from PyQt5.QtMultimedia import QCamera
 from PyQt5.QtMultimediaWidgets import QCameraViewfinder
 
-import prueba_pyqt5 
-from prueba_pyqt5 import dirImagenes
+import proyectoQt5 
+from proyectoQt5 import dirImagenes
 from screens import abc
 from screens import frases
 from screens import palabras
@@ -134,5 +134,5 @@ class ScreenModulos(QMainWindow):
 
     def back_to_previous_screen(self):
         self.hide()
-        self.previous_screen = prueba_pyqt5.App()
+        self.previous_screen = proyectoQt5.App()
         self.previous_screen.show()
