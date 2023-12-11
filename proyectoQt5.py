@@ -1,8 +1,6 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout, QWidget, QGridLayout, QDesktopWidget, QGraphicsDropShadowEffect
-from PyQt5.QtGui import QPixmap, QPalette, QColor, QIcon, QFont
-from PyQt5.QtCore import Qt, QCoreApplication, QSize, QRect, QTimer
-from PyQt5.QtMultimedia import QCamera
-from PyQt5.QtMultimediaWidgets import QCameraViewfinder
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout, QWidget,  QDesktopWidget, QGraphicsDropShadowEffect
+from PyQt5.QtGui import QPixmap, QPalette, QColor, QFont
+from PyQt5.QtCore import Qt, QCoreApplication, QSize
 import sys
 import os
 from screens import modulos

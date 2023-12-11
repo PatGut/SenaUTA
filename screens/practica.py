@@ -8,10 +8,12 @@ from utils import draw
 from utils import landmark
 from model.HandClassifier.HandClassifier import handClassifier
 from PyQt5.QtWidgets import  QMainWindow, QPushButton, QLabel,  QDesktopWidget, QGraphicsDropShadowEffect
-from PyQt5.QtGui import QImage, QPixmap, QPalette, QColor, QFont
+from PyQt5.QtGui import QImage, QPixmap, QPalette, QColor, QFont, QMovie
 from PyQt5.QtCore import  QSize, QThread, pyqtSignal
-import proyectoQt5 
-
+import os
+import proyectoQt5  
+dirImagenes = os.path.join('C:/Users/katia/OneDrive/Documentos/Proyecto 4/SenaUTA/', 'Imagenes')
+print(dirImagenes)
 colorFondo = QColor(135,206,250)
 
 class VideoThread(QThread):
@@ -24,7 +26,7 @@ class VideoThread(QThread):
         self.prevChar = ''
         self.video = None
         self.width, self.height = self.get_screen_resolution()
-    
+    #Funcion para obtener la resolución de la pantalla
     def get_screen_resolution(self):
         desktop = QDesktopWidget()
         screen_rect = desktop.screenGeometry()
@@ -124,6 +126,7 @@ class VideoThread(QThread):
                     )
                 
             debug_image = draw.draw_info(debug_image, fps)
+            #Para cambiar tamaño de la camara, modificar aqui y en la linea 188
             debug_image = cv.resize(debug_image,(int(self.width), int(self.height - self.height*0.1)))
 
             # Convertir el frame a formato QImage
@@ -181,9 +184,27 @@ class ScreenPractica(QMainWindow):
         back_button.move(int(self.width / 1.25), int(self.height / 160))
         self.add_shadow_effect(back_button)
         
+        # Imagen Gif
+        labelCargando = QLabel(self)
+        # Crea el QMovie y asigna el archivo GIF
+        self.movie = QMovie(dirImagenes+'/load.gif')
+        # Asigna el QMovie al QLabel
+        labelCargando.setMovie(self.movie)
+        # Inicia la animación del GIF
+        self.movie.start()
+        # Ajusta el tamaño del QLabel al tamaño del GIF
+        labelCargando.setFixedSize(int(self.width/2), int(self.height/2))
+        # Calcular la posición central
+        center_x = int((self.width / 2.5))
+        center_y = int((self.height / 4))
+        # Mover la imagen a la posición central
+        labelCargando.move(center_x,center_y)
+
+
     #Hilos
         # Inicializar QLabel para mostrar el video
         self.image_label = QLabel(self)
+        #Cambiar tamaño de la camara aqui y en la linea 128
         self.image_label.resize(int(self.width), int(self.height - self.height*0.1))  # Ajusta el tamaño según tus necesidades
         self.image_label.move(0,int(back_button.height()*1.5))  # Ajusta la posición según tus necesidades
     

@@ -1,8 +1,6 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout, QWidget, QDesktopWidget, QGraphicsDropShadowEffect, QGridLayout
-from PyQt5.QtGui import QPixmap, QPalette, QColor, QIcon, QFont
-from PyQt5.QtCore import Qt, QCoreApplication, QSize, QRect, QTimer
-from PyQt5.QtMultimedia import QCamera
-from PyQt5.QtMultimediaWidgets import QCameraViewfinder
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QLabel,QDesktopWidget, QGraphicsDropShadowEffect
+from PyQt5.QtGui import  QPalette, QColor, QIcon
+from PyQt5.QtCore import  QSize
 
 import proyectoQt5 
 from proyectoQt5 import dirImagenes
