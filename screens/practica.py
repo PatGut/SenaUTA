@@ -65,7 +65,6 @@ class VideoThread(QThread):
         # Insertar modelo de clasificación
         
         hand_classifier = handClassifier()
-        
         #Leer Labels
         with open('model/HandClassifier/hand_label.csv',
                 encoding='utf-8-sig') as f:
@@ -226,8 +225,8 @@ class ScreenPractica(QMainWindow):
         parser = argparse.ArgumentParser()
 
         parser.add_argument("--device", type=int, default=0)
-        parser.add_argument("--width", help='cap width', type=int, default=960)
-        parser.add_argument("--height", help='cap height', type=int, default=540)
+        parser.add_argument("--width", help='cap width', type=int, default=640)
+        parser.add_argument("--height", help='cap height', type=int, default=480)
 
         parser.add_argument('--use_static_image_mode', action='store_false')
         parser.add_argument("--min_detection_confidence",

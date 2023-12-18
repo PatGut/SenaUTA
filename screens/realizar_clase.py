@@ -9,7 +9,7 @@ from utils import landmark
 from model.HandClassifier.HandClassifier import handClassifier
 from PyQt5.QtWidgets import  QMainWindow, QPushButton, QLabel,  QDesktopWidget, QGraphicsDropShadowEffect
 from PyQt5.QtGui import QImage, QPixmap, QPalette, QColor, QFont, QIcon, QMovie
-from PyQt5.QtCore import  QSize, QThread, pyqtSignal
+from PyQt5.QtCore import  QSize, QThread, pyqtSignal, QTimer
 from screens import modulos, abc
 
 import os
@@ -26,21 +26,24 @@ class VideoThread(QThread):
         self.prevChar = ''
         self.video = None
         self.width, self.height = self.get_screen_resolution()
+        self.subtitle = ''
+        self.timesCaptured = 0
+        self.prevChar = ''
     
     def get_screen_resolution(self):
         desktop = QDesktopWidget()
         screen_rect = desktop.screenGeometry()
         return screen_rect.width(), screen_rect.height()
     
-    def time_Captured(self, char, times):
-        if self.timesCaptured == 10:
-            self.subtitle += char
-        if char == self.prevChar:
-            times += 1
-            return times
+    def time_Captured(self, char, letra):
+        # Cambia el subtítulo basado en la comparación entre char y letra
+        if char == letra:
+            self.subtitle = "CORRECTO"
         else:
-            self.prevChar = char
-            return 0
+            self.subtitle = "Intentalo de nuevo"
+            self.prevChar = char  # Actualizar el carácter previo
+            return 0  
+
     
     def stop(self):
         self.running = False  # Añadir un atributo para controlar el bucle
@@ -104,7 +107,7 @@ class VideoThread(QThread):
                     #Dibujar
                     debug_image = draw.draw_bounding_rect(True, debug_image, brect)
                     debug_image = draw.draw_landmarks(debug_image, landmark_list)
-                    self.timesCaptured = self.time_Captured(str(keypoint_classifier_labels[mano_senial_id]), self.timesCaptured)
+                    self.timesCaptured = self.time_Captured(str(keypoint_classifier_labels[mano_senial_id]), args.letra)
                     debug_image = draw.draw_info_text(
                         debug_image,
                         brect,
@@ -259,7 +262,7 @@ class ScreenRealizarClase(QMainWindow):
         qt_img = QPixmap.fromImage(cv_img)
         self.image_label.setPixmap(qt_img)  # Asegúrate de que image_label está definido
     
-    @staticmethod
+    
     def get_args():
         parser = argparse.ArgumentParser()
 
@@ -276,6 +279,7 @@ class ScreenRealizarClase(QMainWindow):
                             help='min_tracking_confidence',
                             type=int,
                             default=0.5)
+        parser.add_argument("--letra", type=str, default="A")
         args = parser.parse_args()
         return args
     
@@ -341,7 +345,7 @@ class ScreenB(QMainWindow):
         container.move(int(self.width / 10.11), int(self.height / 5.9))
         self.add_shadow_effect(container) 
         imagen = QLabel(self)
-        pixmap = QPixmap(dirImagenes+'/letraA.png')
+        pixmap = QPixmap(dirImagenes+'/letraB.png')
         imagen.setPixmap(pixmap)
         imagen.setFixedSize(pixmap.width(), pixmap.height())
         # Mover la imagen a la posición central
@@ -375,7 +379,7 @@ class ScreenB(QMainWindow):
         self.image_label.resize(QSize(int(self.width / 2.8), int(self.height / 2.2)))  # Ajusta el tamaño según tus necesidades
         self.image_label.move(int(self.width / 2.05),int(self.height / 5.2))  # Ajusta la posición según tus necesidades
     
-        args = ScreenRealizarClase.get_args()  # Asegúrate de que esta función devuelva los argumentos necesarios
+        args = ScreenB.get_args()  # Asegúrate de que esta función devuelva los argumentos necesarios
         self.thread = VideoThread(args)
         self.thread.change_pixmap_signal.connect(self.update_image)
         self.thread.start()
@@ -416,7 +420,7 @@ class ScreenB(QMainWindow):
         qt_img = QPixmap.fromImage(cv_img)
         self.image_label.setPixmap(qt_img)  # Asegúrate de que image_label está definido
     
-    @staticmethod
+    
     def get_args():
         parser = argparse.ArgumentParser()
 
@@ -433,6 +437,7 @@ class ScreenB(QMainWindow):
                             help='min_tracking_confidence',
                             type=int,
                             default=0.5)
+        parser.add_argument("--letra", type=str, default="B")
         args = parser.parse_args()
         return args
 
@@ -532,7 +537,7 @@ class ScreenC(QMainWindow):
         self.image_label.resize(QSize(int(self.width / 2.8), int(self.height / 2.2)))  # Ajusta el tamaño según tus necesidades
         self.image_label.move(int(self.width / 2.05),int(self.height / 5.2))  # Ajusta la posición según tus necesidades
     
-        args = ScreenRealizarClase.get_args()  # Asegúrate de que esta función devuelva los argumentos necesarios
+        args = ScreenC.get_args()  # Asegúrate de que esta función devuelva los argumentos necesarios
         self.thread = VideoThread(args)
         self.thread.change_pixmap_signal.connect(self.update_image)
         self.thread.start()
@@ -573,7 +578,7 @@ class ScreenC(QMainWindow):
         qt_img = QPixmap.fromImage(cv_img)
         self.image_label.setPixmap(qt_img)  # Asegúrate de que image_label está definido
     
-    @staticmethod
+   
     def get_args():
         parser = argparse.ArgumentParser()
 
@@ -590,6 +595,7 @@ class ScreenC(QMainWindow):
                             help='min_tracking_confidence',
                             type=int,
                             default=0.5)
+        parser.add_argument("--letra", type=str, default="C")
         args = parser.parse_args()
         return args
 
@@ -689,7 +695,7 @@ class ScreenD(QMainWindow):
         self.image_label.resize(QSize(int(self.width / 2.8), int(self.height / 2.2)))  # Ajusta el tamaño según tus necesidades
         self.image_label.move(int(self.width / 2.05),int(self.height / 5.2))  # Ajusta la posición según tus necesidades
     
-        args = ScreenRealizarClase.get_args()  # Asegúrate de que esta función devuelva los argumentos necesarios
+        args = ScreenD.get_args()  # Asegúrate de que esta función devuelva los argumentos necesarios
         self.thread = VideoThread(args)
         self.thread.change_pixmap_signal.connect(self.update_image)
         self.thread.start()
@@ -730,7 +736,7 @@ class ScreenD(QMainWindow):
         qt_img = QPixmap.fromImage(cv_img)
         self.image_label.setPixmap(qt_img)  # Asegúrate de que image_label está definido
     
-    @staticmethod
+    
     def get_args():
         parser = argparse.ArgumentParser()
 
@@ -747,6 +753,7 @@ class ScreenD(QMainWindow):
                             help='min_tracking_confidence',
                             type=int,
                             default=0.5)
+        parser.add_argument("--letra", type=str, default="D")
         args = parser.parse_args()
         return args
 
@@ -846,7 +853,7 @@ class ScreenE(QMainWindow):
         self.image_label.resize(QSize(int(self.width / 2.8), int(self.height / 2.2)))  # Ajusta el tamaño según tus necesidades
         self.image_label.move(int(self.width / 2.05),int(self.height / 5.2))  # Ajusta la posición según tus necesidades
     
-        args = ScreenRealizarClase.get_args()  # Asegúrate de que esta función devuelva los argumentos necesarios
+        args = ScreenE.get_args()  # Asegúrate de que esta función devuelva los argumentos necesarios
         self.thread = VideoThread(args)
         self.thread.change_pixmap_signal.connect(self.update_image)
         self.thread.start()
@@ -887,7 +894,7 @@ class ScreenE(QMainWindow):
         qt_img = QPixmap.fromImage(cv_img)
         self.image_label.setPixmap(qt_img)  # Asegúrate de que image_label está definido
     
-    @staticmethod
+    
     def get_args():
         parser = argparse.ArgumentParser()
 
@@ -904,6 +911,7 @@ class ScreenE(QMainWindow):
                             help='min_tracking_confidence',
                             type=int,
                             default=0.5)
+        parser.add_argument("--letra", type=str, default="E")
         args = parser.parse_args()
         return args
 
