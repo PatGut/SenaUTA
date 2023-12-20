@@ -5,7 +5,7 @@ from PyQt5.QtCore import  QSize
 import proyectoQt5 
 from proyectoQt5 import dirImagenes
 from screens import modulos
-from screens import realizar_clase
+from screens.clases import a, f, k, p, u
 
 
 colorFondo = QColor(135,206,250)
@@ -189,8 +189,7 @@ class ScreenABC(QMainWindow):
         boton.setFixedSize(QSize(int(self.width / 4), int(self.height / 8)))
         boton.move(int(self.width / 2), int(self.height / 1.6))
         self.add_shadow_effect(boton) 
-#   
-        boton.clicked.connect(self.iniciarClase) 
+        boton.clicked.connect(self.iniciarClase1) 
         container.show()
         letras_button.show()
         boton.show()
@@ -229,7 +228,7 @@ class ScreenABC(QMainWindow):
         boton.setFixedSize(QSize(int(self.width / 4), int(self.height / 8)))
         boton.move(int(self.width / 2), int(self.height / 1.6))
         self.add_shadow_effect(boton)
-        boton.clicked.connect(self.iniciarClase) 
+        boton.clicked.connect(self.iniciarClase2) 
         container.show()
         letras_button.show()
         boton.show()
@@ -265,7 +264,7 @@ class ScreenABC(QMainWindow):
         boton.setFixedSize(QSize(int(self.width / 4), int(self.height / 8)))
         boton.move(int(self.width / 2), int(self.height / 1.6))
         self.add_shadow_effect(boton) 
-        boton.clicked.connect(self.iniciarClase) 
+        boton.clicked.connect(self.iniciarClase3) 
         container.show()
         letras_button.show()
         boton.show()
@@ -301,7 +300,7 @@ class ScreenABC(QMainWindow):
         boton.setFixedSize(QSize(int(self.width / 4), int(self.height / 8)))
         boton.move(int(self.width / 2), int(self.height / 1.6))
         self.add_shadow_effect(boton) 
-        boton.clicked.connect(self.iniciarClase) 
+        boton.clicked.connect(self.iniciarClase4) 
         container.show()
         letras_button.show()
         boton.show()
@@ -339,16 +338,35 @@ class ScreenABC(QMainWindow):
         boton.setFixedSize(QSize(int(self.width / 4), int(self.height / 8)))
         boton.move(int(self.width / 2), int(self.height / 1.6))
         self.add_shadow_effect(boton) 
-        boton.clicked.connect(self.iniciarClase) 
+        boton.clicked.connect(self.iniciarClase5) 
         container.show()
         letras_button.show()
         boton.show()
-
-    def iniciarClase(self):
-        print('Clase iniciada')
-        self.next_screen = realizar_clase.ScreenRealizarClase()
+    def iniciarClase1(self):
+        self.next_screen = a.ScreenRealizarClase()
         self.next_screen.show()
         self.hide()
+
+    def iniciarClase2(self):
+        self.next_screen = f.ScreenF()  
+        self.next_screen.show()
+        self.hide()
+
+    def iniciarClase3(self):
+        self.next_screen = k.ScreenK()   
+        self.next_screen.show()
+        self.hide()
+    
+    def iniciarClase4(self):
+        self.next_screen = p.ScreenP()    
+        self.next_screen.show()
+        self.hide()
+    
+    def iniciarClase5(self):
+        self.next_screen = u.ScreenU()   
+        self.next_screen.show()
+        self.hide()
+
 
     def show_next_screen(self):
         self.next_screen = proyectoQt5.App()

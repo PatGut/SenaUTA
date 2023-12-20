@@ -5,7 +5,7 @@ from PyQt5.QtCore import  QSize
 import proyectoQt5 
 from proyectoQt5 import dirImagenes
 from screens import modulos
-from screens import realizar_clase
+from screens.clases import a
 
 width = 2040
 height = 1400
@@ -216,7 +216,7 @@ class ScreenFrases(QMainWindow):
 
     def iniciarClase(self):
         print('Clase iniciada')
-        self.next_screen = realizar_clase.ScreenRealizarClase()
+        self.next_screen = a.ScreenRealizarClase()
         self.next_screen.show()
         self.hide()
 
