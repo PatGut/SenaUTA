@@ -50,11 +50,11 @@ class ScreenX(QMainWindow):
         container.move(int(self.width / 10.11), int(self.height / 5.9))
         self.add_shadow_effect(container) 
         imagen = QLabel(self)
-        pixmap = QPixmap(dirImagenes+'/letraB.png')
+        pixmap = QPixmap(dirImagenes+'/letraX.png')
         imagen.setPixmap(pixmap)
         imagen.setFixedSize(pixmap.width(), pixmap.height())
         # Mover la imagen a la posición central
-        imagen.move(int(container.width()/2), int(container.height()/1.75))
+        imagen.move(int(container.width()/2.5), int(container.height()/1.75))
 
         camaraContainer = QPushButton('',self)
         camaraContainer_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades

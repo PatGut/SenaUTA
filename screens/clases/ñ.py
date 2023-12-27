@@ -43,18 +43,18 @@ class ScreenÑ(QMainWindow):
         container_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades
         container_border_width = int(self.height * container_border_width_percentage)
         container.setStyleSheet(f"border: {container_border_width}px solid #00416A; text-align: top; border-radius: 50px; padding: 50px; background-color: #BFF5F5; color: #00416A; ")
-        container_font = QFont("Century Gothic", pointSize=int(self.height * 0.02))  # Ajusta el factor según tus necesidades
+        container_font = QFont("Calibri", pointSize=int(self.height * 0.02))  # Ajusta el factor según tus necesidades
         container_font.setBold(True)  
         container.setFont(container_font)         
         container.setFixedSize(QSize(int(self.width / 3.2), int(self.height / 2.28)))
         container.move(int(self.width / 10.11), int(self.height / 5.9))
         self.add_shadow_effect(container) 
         imagen = QLabel(self)
-        pixmap = QPixmap(dirImagenes+'/letraB.png')
+        pixmap = QPixmap(dirImagenes+'/letraÑ.png')
         imagen.setPixmap(pixmap)
         imagen.setFixedSize(pixmap.width(), pixmap.height())
         # Mover la imagen a la posición central
-        imagen.move(int(container.width()/2), int(container.height()/1.75))
+        imagen.move(int(container.width()/2.5), int(container.height()/1.75))
 
         camaraContainer = QPushButton('',self)
         camaraContainer_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades

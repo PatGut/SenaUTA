@@ -4,8 +4,7 @@ from PyQt5.QtCore import QSize
 
 import proyectoQt5 
 from proyectoQt5 import dirImagenes
-from screens import modulos
-from screens.clases import a
+from screens import modulos, practica
 
 width = 2040
 height = 1400
@@ -251,7 +250,7 @@ class ScreenPalabras(QMainWindow):
 
     def iniciarClase(self):
         print('Clase iniciada')
-        self.next_screen = a.ScreenRealizarClase()
+        self.next_screen = practica.ScreenPractica()
         self.next_screen.show()
         self.hide()
 

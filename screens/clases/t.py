@@ -3,8 +3,8 @@ from utils import video
 from PyQt5.QtWidgets import  QMainWindow, QPushButton, QLabel,  QDesktopWidget, QGraphicsDropShadowEffect
 from PyQt5.QtGui import QPixmap, QPalette, QColor, QFont, QIcon, QMovie
 from PyQt5.QtCore import  QSize
-from screens import modulos, abc
-from screens.clases import u
+from screens import abc
+from screens.clases import s
 from proyectoQt5 import dirImagenes
 
 colorFondo = QColor(135,206,250)
@@ -53,7 +53,7 @@ class ScreenT(QMainWindow):
         container.move(int(self.width / 10.11), int(self.height / 5.9))
         self.add_shadow_effect(container) 
         imagen = QLabel(self)
-        pixmap = QPixmap(dirImagenes+'/letraA.png')
+        pixmap = QPixmap(dirImagenes+'/letraT.png')
         imagen.setPixmap(pixmap)
         imagen.setFixedSize(pixmap.width(), pixmap.height())
         # Mover la imagen a la posición central
@@ -154,7 +154,7 @@ class ScreenT(QMainWindow):
         if self.thread.isRunning():
             self.thread.stop()
         
-        self.previous_screen = modulos.ScreenModulos()
+        self.previous_screen = s.ScreenS()
         self.previous_screen.show()
         self.hide()
 
@@ -163,13 +163,13 @@ class ScreenT(QMainWindow):
         if self.thread.isRunning():
             self.thread.stop()
         
-        self.next_screen = u.ScreenU()
+        self.next_screen = abc.ScreenABC()
         self.next_screen.show()
         self.hide()
 
 
 
 
-
+#u.ScreenU()
 
 

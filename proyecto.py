@@ -137,12 +137,12 @@ def main():
                         debug_image = draw.draw_bounding_rect(use_brect, debug_image, brect)
                         debug_image = draw.draw_landmarks(debug_image, landmark_list)
                         timesCaptured = time_Captured(str(keypoint_classifier_labels[mano_senial_id]),timesCaptured)
-                        debug_image = draw.draw_info_text(
+                        '''debug_image = draw.draw_info_text(
                             debug_image,
                             brect,
                             handness,
                             keypoint_classifier_labels[mano_senial_id]
-                        )
+                        )'''
                         
                         textsize = cv.getTextSize(subtitle, cv.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
                         textX = (debug_image.shape[1] - textsize[0]) / 2

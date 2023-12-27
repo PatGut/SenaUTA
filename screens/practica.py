@@ -12,10 +12,22 @@ from PyQt5.QtGui import QImage, QPixmap, QPalette, QColor, QFont, QMovie
 from PyQt5.QtCore import  QSize, QThread, pyqtSignal
 import os
 import proyectoQt5  
+import pyttsx3
+
+import threading
 dirImagenes = os.path.join('C:/Users/katia/OneDrive/Documentos/Proyecto 4/SenaUTA/', 'Imagenes')
 print(dirImagenes)
 colorFondo = QColor(135,206,250)
 
+# Función para inicializar y usar el motor de voz
+def speak(text):
+    def run_speak():
+        engine = pyttsx3.init()
+        engine.say(text)
+        engine.runAndWait()
+
+    # Iniciar la síntesis de voz en un nuevo hilo
+    threading.Thread(target=run_speak).start()
 class VideoThread(QThread):
     change_pixmap_signal = pyqtSignal(QImage)
     def __init__(self, args):
@@ -23,8 +35,10 @@ class VideoThread(QThread):
         self.args = args
         self.subtitle = ''
         self.timesCaptured = 0
+        self.correctoTimer = 0
         self.prevChar = ''
         self.video = None
+        self.array = []
         self.width, self.height = self.get_screen_resolution()
     #Funcion para obtener la resolución de la pantalla
     def get_screen_resolution(self):
@@ -33,14 +47,47 @@ class VideoThread(QThread):
         return screen_rect.width(), screen_rect.height()
     
     def time_Captured(self, char, times):
-        if self.timesCaptured == 10:
-            self.subtitle += char
+        letras_din = ["G", "J", "EYE", "S", "X"]
+        tiempoMostrarCorrecto = 3  # Duración en segundos para mostrar "CORRECTO"
+
+        # Disminuir el temporizador si es necesario
+        if self.correctoTimer > 0:
+            self.correctoTimer -= 1
+            if self.correctoTimer == 0:
+                self.subtitle = ""
+                self.array = []
+            return times
+
         if char == self.prevChar:
             times += 1
-            return times
         else:
             self.prevChar = char
-            return 0
+            times = 0
+
+        if times == 5:
+            #self.subtitle += char
+            
+
+            if char[:-1] in letras_din:
+                if char.endswith("1"):
+                    self.array.append(char)
+                    return 0
+                elif char.endswith("2") and char[:-1]+"1" in self.array:
+                    self.subtitle += char[:-1]
+                    speak(char[:-1])
+                    self.correctoTimer = tiempoMostrarCorrecto * 5  # Asumiendo que esta función se llama 20 veces por segundo
+                    return 0
+                else:
+                    self.subtitle = ""
+                    return 0
+            else:
+                   # Cambia el subtítulo basado en la comparación entre char y letra
+                self.subtitle += char # Actualizar el carácter previo
+                speak(char)
+                return 0 
+         
+
+        return times
     
     def stop(self):
         self.running = False  # Añadir un atributo para controlar el bucle
@@ -103,13 +150,16 @@ class VideoThread(QThread):
                     #Dibujar
                     debug_image = draw.draw_bounding_rect(True, debug_image, brect)
                     debug_image = draw.draw_landmarks(debug_image, landmark_list)
-                    self.timesCaptured = self.time_Captured(str(keypoint_classifier_labels[mano_senial_id]), self.timesCaptured)
+                    detected_letter = str(keypoint_classifier_labels[mano_senial_id])
+                    self.timesCaptured = self.time_Captured(detected_letter, self.timesCaptured)
+                    
+                    '''
                     debug_image = draw.draw_info_text(
                         debug_image,
                         brect,
                         handness,
                         keypoint_classifier_labels[mano_senial_id]
-                    )
+                    )'''
                     
                     textsize = cv.getTextSize(self.subtitle, cv.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
                     textX = (debug_image.shape[1] - textsize[0]) / 2

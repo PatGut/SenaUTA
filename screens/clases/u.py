@@ -4,7 +4,8 @@ from PyQt5.QtGui import  QPixmap, QPalette, QColor, QFont, QIcon, QMovie
 from PyQt5.QtCore import  QSize
 from proyectoQt5 import dirImagenes
 from utils import video
-from screens.clases import t, v
+from screens.clases import v
+from screens import modulos
 colorFondo = QColor(135,206,250)
 class ScreenU(QMainWindow):
     def __init__(self):
@@ -50,7 +51,7 @@ class ScreenU(QMainWindow):
         container.move(int(self.width / 10.11), int(self.height / 5.9))
         self.add_shadow_effect(container) 
         imagen = QLabel(self)
-        pixmap = QPixmap(dirImagenes+'/letraB.png')
+        pixmap = QPixmap(dirImagenes+'/letraU.png')
         imagen.setPixmap(pixmap)
         imagen.setFixedSize(pixmap.width(), pixmap.height())
         # Mover la imagen a la posición central
@@ -151,7 +152,7 @@ class ScreenU(QMainWindow):
         if self.thread.isRunning():
             self.thread.stop()
         
-        self.previous_screen = t.ScreenT()
+        self.previous_screen = modulos.ScreenModulos()
         self.previous_screen.show()
         self.hide()
 

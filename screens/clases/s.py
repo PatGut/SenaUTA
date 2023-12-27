@@ -4,8 +4,7 @@ from PyQt5.QtGui import  QPixmap, QPalette, QColor, QFont, QIcon, QMovie
 from PyQt5.QtCore import  QSize
 from proyectoQt5 import dirImagenes
 from utils import video
-from screens.clases import r
-from screens import abc
+from screens.clases import r,t
 colorFondo = QColor(135,206,250)
 class ScreenS(QMainWindow):
     def __init__(self):
@@ -51,11 +50,11 @@ class ScreenS(QMainWindow):
         container.move(int(self.width / 10.11), int(self.height / 5.9))
         self.add_shadow_effect(container) 
         imagen = QLabel(self)
-        pixmap = QPixmap(dirImagenes+'/letraA.png')
+        pixmap = QPixmap(dirImagenes+'/letraS.png')
         imagen.setPixmap(pixmap)
         imagen.setFixedSize(pixmap.width(), pixmap.height())
         # Mover la imagen a la posición central
-        imagen.move(int(container.width()/2), int(container.height()/1.75))
+        imagen.move(int(container.width()/2.1), int(container.height()/1.75))
 
         camaraContainer = QPushButton('',self)
         camaraContainer_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades
@@ -161,6 +160,6 @@ class ScreenS(QMainWindow):
         if self.thread.isRunning():
             self.thread.stop()
         
-        self.next_screen = abc.ScreenABC()
+        self.next_screen = t.ScreenT()
         self.next_screen.show()
         self.hide()

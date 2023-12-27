@@ -1,6 +1,8 @@
 import copy
 import csv
 import cv2 as cv
+import pyttsx3
+import threading
 import mediapipe as mp
 from utils import cvfpscalc
 from utils import draw
@@ -11,34 +13,86 @@ from PyQt5.QtGui import QImage, QColor
 from PyQt5.QtCore import  QThread, pyqtSignal
 
 colorFondo = QColor(135,206,250)
+# Función para inicializar y usar el motor de voz
+def speak(text):
+    def run_speak():
+        engine = pyttsx3.init()
+        engine.say(text)
+        engine.runAndWait()
+
+    # Iniciar la síntesis de voz en un nuevo hilo
+    threading.Thread(target=run_speak).start()
 class VideoThread(QThread):
+    
     change_pixmap_signal = pyqtSignal(QImage)
     def __init__(self, args):
         super().__init__()
         self.args = args
         self.subtitle = ''
         self.timesCaptured = 0
+        self.correctoTimer = 0
         self.prevChar = ''
         self.video = None
+        self.array = []
         self.width, self.height = self.get_screen_resolution()
-        self.subtitle = ''
-        self.timesCaptured = 0
-        self.prevChar = ''
     
     def get_screen_resolution(self):
         desktop = QDesktopWidget()
         screen_rect = desktop.screenGeometry()
         return screen_rect.width(), screen_rect.height()
     
-    def time_Captured(self, char, letra):
-        # Cambia el subtítulo basado en la comparación entre char y letra
-        if char == letra:
-            self.subtitle = "CORRECTO"
-        else:
-            self.subtitle = "Intentalo de nuevo"
-            self.prevChar = char  # Actualizar el carácter previo
-            return 0  
+    def time_Captured(self, char, letra, times):
+        letras_din = ["G", "J", "EYE", "S", "X"]
+        tiempoMostrarCorrecto = 3  # Duración en segundos para mostrar "CORRECTO"
 
+        # Disminuir el temporizador si es necesario
+        if self.correctoTimer > 0:
+            self.correctoTimer -= 1
+            if self.correctoTimer == 0:
+                self.subtitle = ""
+                self.array = []
+            return times
+
+        if char == self.prevChar:
+            times += 1
+        else:
+            self.prevChar = char
+            times = 0
+
+        if times == 5:
+            #self.subtitle += char
+            
+
+            if char[:-1] in letras_din:
+                if char.endswith("1"):
+                    self.array.append(char)
+                    return 0
+                elif char.endswith("2") and char[:-1]+"1" in self.array:
+                    self.subtitle = "CORRECTO"
+                    speak("correcto")
+                    self.correctoTimer = tiempoMostrarCorrecto * 5  # Asumiendo que esta función se llama 20 veces por segundo
+                    return 0
+                else:
+                    self.subtitle = "INTENTALO DE NUEVO"
+                    return 0
+            else:
+                   # Cambia el subtítulo basado en la comparación entre char y letra
+                if char == letra:
+                    self.subtitle = "CORRECTO"
+                else:
+                    self.subtitle = "INTENTALO DE NUEVO"
+                    self.prevChar = char  # Actualizar el carácter previo
+                    return 0 
+         
+
+        return times
+
+                
+                
+        
+         
+
+        
     
     def stop(self):
         self.running = False  # Añadir un atributo para controlar el bucle
@@ -102,13 +156,13 @@ class VideoThread(QThread):
                     #Dibujar
                     debug_image = draw.draw_bounding_rect(True, debug_image, brect)
                     debug_image = draw.draw_landmarks(debug_image, landmark_list)
-                    self.timesCaptured = self.time_Captured(str(keypoint_classifier_labels[mano_senial_id]), args.letra)
-                    debug_image = draw.draw_info_text(
+                    self.timesCaptured = self.time_Captured(str(keypoint_classifier_labels[mano_senial_id]), args.letra, self.timesCaptured)
+                    '''debug_image = draw.draw_info_text(
                         debug_image,
                         brect,
                         handness,
                         keypoint_classifier_labels[mano_senial_id]
-                    )
+                    )'''
                     
                     textsize = cv.getTextSize(self.subtitle, cv.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
                     textX = (debug_image.shape[1] - textsize[0]) / 2

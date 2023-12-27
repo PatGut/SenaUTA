@@ -27,7 +27,7 @@ class handClassifier(object):
         # Ajusta la forma de los datos de entrada para que coincida con las expectativas del modelo
         nueva_forma = (1, 42)
         input_data = np.array([landmark_list], dtype=np.float32).reshape(nueva_forma)
-        print("nUEVAS Dimensiones de los datos de entrada:", input_data.shape)
+        print("NUEVAS Dimensiones de los datos de entrada:", input_data.shape)
 
         self.interpreter.set_tensor(
             input_details_tensor_index,
