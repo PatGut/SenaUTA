@@ -5,7 +5,7 @@ from PyQt5.QtGui import QPixmap, QPalette, QColor, QFont, QIcon, QMovie
 from PyQt5.QtCore import  QSize
 from screens import modulos, abc
 from screens.clases import g
-from proyectoQt5 import dirImagenes
+from senaUtaEduca import dirImagenes
 
 colorFondo = QColor(135,206,250)
 

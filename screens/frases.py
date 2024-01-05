@@ -1,22 +1,40 @@
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QLabel
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QLabel, QDesktopWidget, QGraphicsDropShadowEffect,  QGridLayout, QWidget
 from PyQt5.QtGui import  QPalette, QColor, QIcon, QFont
 from PyQt5.QtCore import  QSize
 
-import proyectoQt5 
-from proyectoQt5 import dirImagenes
+import senaUtaEduca 
+from senaUtaEduca import dirImagenes
 from screens import modulos, practica
 
-width = 2040
-height = 1400
 colorFondo = QColor(135,206,250)
 
 class ScreenFrases(QMainWindow):
     def __init__(self):
         super().__init__()
         self.title = 'Frases'
-        self.width = width
-        self.height = height
+        self.width, self.height = self.get_screen_resolution()
+        self.active_containers = []
         self.initUI()
+
+    #Aqui se toma la resolución de la pantalla del usuario
+    def get_screen_resolution(self):
+        desktop = QDesktopWidget()
+        screen_rect = desktop.screenGeometry()
+        return screen_rect.width(), screen_rect.height()
+    
+    #Función para agregar sombreado a los botones
+    def add_shadow_effect(self, widget):
+        shadow = QGraphicsDropShadowEffect(widget)
+        shadow.setBlurRadius(20)  # Ajusta el radio de desenfoque según tus necesidades
+        shadow.setColor(QColor(0, 0, 0, 150))  # Ajusta el color y la opacidad de la sombra
+        shadow.setOffset(10, 10)  # Ajusta el desplazamiento de la sombra
+        widget.setGraphicsEffect(shadow)
+    #Función para ocultar container anterior
+    def hide_previous_containers(self):
+        for container in self.active_containers:
+            container.hide()  # Oculta el contenedor
+            container.deleteLater()  # Elimina el contenedor
+        self.active_containers.clear()
 
     def initUI(self):
         self.setWindowTitle(self.title)
@@ -25,58 +43,101 @@ class ScreenFrases(QMainWindow):
         palette = QPalette()
         palette.setColor(QPalette.Window, colorFondo)
         self.setPalette(palette)
+        # Crear un layout de cuadrícula
+        grid_layout = QGridLayout()
 
-        label = QLabel('Frases', self)
+        label = QLabel('FRASES', self)
         label.setFont(label.font())
         label.setFixedSize(QSize(900, 200))
 
         label.setStyleSheet("font-family: Century Gothic; padding-left: 50px; font-size: 100px;font-weight: bold;    color: #00416A;")
+        grid_layout.addWidget(label, 0, 0, 1, 2)  # Agregar la etiqueta a la cuadrícula
 
+        #CLASE 1
         clase1_button = QPushButton('Clase 1', self)
-        clase1_button.setStyleSheet("font-family: Century Gothic; font-weight: bold; font-size: 60px; border: 10px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
-        clase1_button.setFixedSize(QSize(500, 200))
-        clase1_button.move(int(self.width / 3) - int(clase1_button.width())  - 100, 230)
-        clase1_button.clicked.connect(self.class1)    
+        clase1_button_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades
+        clase1_button_border_width = int(self.height * clase1_button_border_width_percentage)
+        clase1_button.setStyleSheet(f"border: {clase1_button_border_width}px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
+        clase1_button_font = QFont("Century Gothic", pointSize=int(self.height * 0.018))  # Ajusta el factor según tus necesidades
+        clase1_button_font.setBold(True) 
+        clase1_button.setFont(clase1_button_font) 
+        clase1_button.setFixedSize(QSize(int(self.width/4), int(self.height/7)))
+        clase1_button.clicked.connect(self.class1)
+        self.add_shadow_effect(clase1_button)   
+        grid_layout.addWidget(clase1_button, 1, 0)  # Agregar el botón a la cuadrícula
 
+
+        #CLASE 2
         clase2_button = QPushButton('Clase 2', self)
-        clase2_button.setStyleSheet("font-family: Century Gothic; font-weight: bold; font-size: 60px; border: 10px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
-        clase2_button.setFixedSize(QSize(500, 200))
-        clase2_button.move(int(self.width / 3) - int(clase1_button.width())  - 100, 450)
+        clase2_button_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades
+        clase2_button_border_width = int(self.height * clase2_button_border_width_percentage)
+        clase2_button.setStyleSheet(f"border: {clase2_button_border_width}px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
+        clase2_button_font = QFont("Century Gothic", pointSize=int(self.height * 0.018))  # Ajusta el factor según tus necesidades
+        clase2_button_font.setBold(True) 
+        clase2_button.setFont(clase2_button_font) 
+        clase2_button.setFixedSize(QSize(int(self.width/4), int(self.height/7)))
         clase2_button.clicked.connect(self.class2)    
+        self.add_shadow_effect(clase2_button)   
+        grid_layout.addWidget(clase2_button, 2, 0)  # Agregar el botón a la cuadrícula
 
+        #CLASE 3
         clase3_button = QPushButton('Clase 3', self)
-        clase3_button.setStyleSheet("font-family: Century Gothic; font-weight: bold; font-size: 60px; border: 10px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
-        clase3_button.setFixedSize(QSize(500, 200))
-        clase3_button.move(int(self.width / 3) - int(clase1_button.width())  - 100, 670)
+        clase3_button_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades
+        clase3_button_border_width = int(self.height * clase3_button_border_width_percentage)
+        clase3_button.setStyleSheet(f"border: {clase3_button_border_width}px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
+        clase3_button_font = QFont("Century Gothic", pointSize=int(self.height * 0.018))  # Ajusta el factor según tus necesidades
+        clase3_button_font.setBold(True) 
+        clase3_button.setFont(clase3_button_font) 
+        clase3_button.setFixedSize(QSize(int(self.width/4), int(self.height/7)))
         clase3_button.clicked.connect(self.class3)    
+        self.add_shadow_effect(clase3_button)   
+        grid_layout.addWidget(clase3_button, 3, 0)  # Agregar el botón a la cuadrícula
 
+        #CLASE 4
         clase4_button = QPushButton('Clase 4', self)
-        clase4_button.setStyleSheet("font-family: Century Gothic; font-weight: bold; font-size: 60px; border: 10px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
-        clase4_button.setFixedSize(QSize(500, 200))
-        clase4_button.move(int(self.width / 3) - int(clase1_button.width())  - 100, 890)
-        clase4_button.clicked.connect(self.class4)    
+        clase4_button_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades
+        clase4_button_border_width = int(self.height * clase4_button_border_width_percentage)
+        clase4_button.setStyleSheet(f"border: {clase4_button_border_width}px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
+        clase4_button_font = QFont("Century Gothic", pointSize=int(self.height * 0.018))  # Ajusta el factor según tus necesidades
+        clase4_button_font.setBold(True) 
+        clase4_button.setFont(clase4_button_font) 
+        clase4_button.setFixedSize(QSize(int(self.width/4), int(self.height/7)))
+        clase4_button.clicked.connect(self.class4)
+        self.add_shadow_effect(clase4_button)   
+        grid_layout.addWidget(clase4_button, 4, 0)  # Agregar el botón a la cuadrícula   
 
-        
 
 
-        # Botón 'Volver'
-        back_button_icon = QIcon(dirImagenes+'/volver.png')
-        back_button = QPushButton(self)
-        back_button.setFixedSize(QSize(200, 200))
-        
+       # Botón 'Volver'
+        back_button_icon = QIcon(dirImagenes+'/volver.png')  # Asegúrate de que el nombre del ícono sea correcto
+        back_button = QPushButton('', self)
+        back_button_border_width_percentage = 0.009
+        back_button_border_width = int(self.height * back_button_border_width_percentage)
+        back_button.setStyleSheet(f"border: {back_button_border_width}px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
+        back_button_font = QFont("Century Gothic", pointSize=int(self.height * 0.018))
+        back_button_font.setBold(True) 
+        back_button.setFont(back_button_font) 
+        back_button.setFixedSize(QSize(int(self.width/12), int(self.height/7)))
         back_button.setIcon(back_button_icon)
-        # Establecer el tamaño del icono
-        back_button.setIconSize(QSize(200, 200))
-        back_button.setStyleSheet("font-family: Century Gothic; font-weight: bold; font-size: 60px; border: 10px solid #00416A; border-radius: 50px; padding: 10px; background-color: #BFF5F5; color: #00416A; ")
-
+        # Establecer el ícono directamente en el botón
+        back_button.setIcon(back_button_icon)
+        back_button.setIconSize(QSize(int(self.width/12), int(self.height/7)))
         back_button.clicked.connect(self.back_to_previous_screen)
-        back_button.move(int(self.width / 2) + int(back_button.width()) + 600 ,30)
-
+        self.add_shadow_effect(back_button)   
+        grid_layout.addWidget(back_button, 0, 3)
+        
+        # Establecer el layout de la ventana
+        central_widget = QWidget(self)
+        central_widget.setLayout(grid_layout)
+        self.setCentralWidget(central_widget)
+        
+        # Mostrar la ventana en pantalla completa
+        self.showFullScreen()
         self.show()
 
     def class1(self):
         print('Clase 1 seleccionada')
-        container = QPushButton('Clase 1', self)
+        container = QPushButton('CLASE 1', self)
         container_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades
         container_border_width = int(self.height * container_border_width_percentage)
         container.setStyleSheet(f"border: {container_border_width}px solid #00416A; text-align: top; border-radius: 50px; padding: 50px; background-color: #BFF5F5; color: #00416A; ")
@@ -111,7 +172,7 @@ class ScreenFrases(QMainWindow):
 
     def class2(self):
         print('Clase 2 seleccionada')
-        container = QPushButton('Clase 2', self)
+        container = QPushButton('CLASE 2', self)
         container_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades
         container_border_width = int(self.height * container_border_width_percentage)
         container.setStyleSheet(f"border: {container_border_width}px solid #00416A; text-align: top; border-radius: 50px; padding: 50px; background-color: #BFF5F5; color: #00416A; ")
@@ -145,7 +206,7 @@ class ScreenFrases(QMainWindow):
 
     def class3(self):
         print('Clase 3 seleccionada')
-        container = QPushButton('Clase 3', self)
+        container = QPushButton('CLASE 3', self)
         container_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades
         container_border_width = int(self.height * container_border_width_percentage)
         container.setStyleSheet(f"border: {container_border_width}px solid #00416A; text-align: top; border-radius: 50px; padding: 50px; background-color: #BFF5F5; color: #00416A; ")
@@ -179,7 +240,7 @@ class ScreenFrases(QMainWindow):
 
     def class4(self):
         print('Clase 4 seleccionada')
-        container = QPushButton('Clase 4', self)
+        container = QPushButton('CLASE 4', self)
         container_border_width_percentage = 0.009  # Ajusta el porcentaje según tus necesidades
         container_border_width = int(self.height * container_border_width_percentage)
         container.setStyleSheet(f"border: {container_border_width}px solid #00416A; text-align: top; border-radius: 50px; padding: 50px; background-color: #BFF5F5; color: #00416A; ")
@@ -220,7 +281,7 @@ class ScreenFrases(QMainWindow):
         self.hide()
 
     def show_next_screen(self):
-        self.next_screen = proyectoQt5.App()
+        self.next_screen = senaUtaEduca.App()
         self.next_screen.show()
         self.hide()
 

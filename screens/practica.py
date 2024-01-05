@@ -11,12 +11,11 @@ from PyQt5.QtWidgets import  QMainWindow, QPushButton, QLabel,  QDesktopWidget, 
 from PyQt5.QtGui import QImage, QPixmap, QPalette, QColor, QFont, QMovie
 from PyQt5.QtCore import  QSize, QThread, pyqtSignal
 import os
-import proyectoQt5  
+import senaUtaEduca  
 import pyttsx3
-
 import threading
 dirImagenes = os.path.join('C:/Users/katia/OneDrive/Documentos/Proyecto 4/SenaUTA/', 'Imagenes')
-print(dirImagenes)
+
 colorFondo = QColor(135,206,250)
 
 # Función para inicializar y usar el motor de voz
@@ -191,6 +190,7 @@ class VideoThread(QThread):
 
 
 class ScreenPractica(QMainWindow):
+    print(os.path.dirname(__file__))
     def __init__(self):
         super().__init__()
         self.title = 'Práctica Libre'
@@ -296,6 +296,6 @@ class ScreenPractica(QMainWindow):
         if self.thread.isRunning():
             self.thread.stop()
         
-        self.previous_screen = proyectoQt5.App()
+        self.previous_screen = senaUtaEduca.App()
         self.previous_screen.show()
         self.hide()

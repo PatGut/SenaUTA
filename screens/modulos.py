@@ -2,8 +2,8 @@ from PyQt5.QtWidgets import QMainWindow, QPushButton, QLabel,QDesktopWidget, QGr
 from PyQt5.QtGui import  QPalette, QColor, QIcon
 from PyQt5.QtCore import  QSize
 
-import proyectoQt5 
-from proyectoQt5 import dirImagenes
+import senaUtaEduca 
+from senaUtaEduca import dirImagenes
 from screens import abc
 from screens import frases
 from screens import palabras
@@ -132,5 +132,5 @@ class ScreenModulos(QMainWindow):
 
     def back_to_previous_screen(self):
         self.hide()
-        self.previous_screen = proyectoQt5.App()
+        self.previous_screen = senaUtaEduca.App()
         self.previous_screen.show()

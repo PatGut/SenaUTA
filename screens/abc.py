@@ -2,8 +2,8 @@ from PyQt5.QtWidgets import QMainWindow, QPushButton, QLabel, QWidget, QDesktopW
 from PyQt5.QtGui import  QPalette, QColor, QIcon, QFont
 from PyQt5.QtCore import  QSize
 
-import proyectoQt5 
-from proyectoQt5 import dirImagenes
+import senaUtaEduca 
+from senaUtaEduca import dirImagenes
 from screens import modulos
 from screens.clases import a, f, k, p, u
 
@@ -369,7 +369,7 @@ class ScreenABC(QMainWindow):
 
 
     def show_next_screen(self):
-        self.next_screen = proyectoQt5.App()
+        self.next_screen = senaUtaEduca.App()
         self.next_screen.show()
         self.hide()
 

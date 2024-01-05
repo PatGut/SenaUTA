@@ -2,7 +2,7 @@ import argparse
 from PyQt5.QtWidgets import  QMainWindow, QPushButton, QLabel,  QDesktopWidget, QGraphicsDropShadowEffect
 from PyQt5.QtGui import  QPixmap, QPalette, QColor, QFont, QIcon, QMovie
 from PyQt5.QtCore import  QSize
-from proyectoQt5 import dirImagenes
+from senaUtaEduca import dirImagenes
 from utils import video
 from screens.clases import v, x
 colorFondo = QColor(135,206,250)
